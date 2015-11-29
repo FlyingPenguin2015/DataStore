@@ -12,7 +12,7 @@ public class ReverseHandler extends Handler
 
 	public void run() throws IOException
 	{
-		// Read message
+		// Read message.
 		String inMessage = StreamUtil.readLine(inputStream);
 		logger.debug("inMessage: " + inMessage);
 
