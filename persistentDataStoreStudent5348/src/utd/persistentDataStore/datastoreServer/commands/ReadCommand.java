@@ -17,11 +17,12 @@ public class ReadCommand extends ServerCommand {
 	{
 		//Read command name from socket input
 		String name = StreamUtil.readLine(inputStream);
+		if(name==null)throw new ServerException("can not read name");
 		logger.debug("Command Name: " + name);
 		
 		// Read bytes from the file with that command name
 		byte [] data = FileUtil.readData(name);
-		
+		if(data.length==0)throw new ServerException("no data in this file");
 		//Put data into stream
 		StreamUtil.writeData(data, outputStream);
 		
