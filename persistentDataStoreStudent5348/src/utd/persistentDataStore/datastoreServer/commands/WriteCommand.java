@@ -18,15 +18,16 @@ public class WriteCommand extends ServerCommand {
 		
 
 		String name = StreamUtil.readLine(inputStream);
-		if(name==null)throw new ServerException("can not read name");
+		if(name==null)throw new ServerException("Can not read name");
 		logger.debug("name: " + name);
 		String size = StreamUtil.readLine(inputStream);
-		if(size==null)throw new ServerException("can not read size");
+		if(size==null)throw new ServerException("Can not read size");
 		int length = Integer.parseInt(size);		
 		logger.debug("length: " + length);
 	
 		byte[] data = new byte[length];
-		if(inputStream.available()<length)throw new ServerException("can not read N bytes");
+		if(inputStream.available()<length)throw new ServerException("Can not read N bytes");
+		
 		data = StreamUtil.readData(length, inputStream);
 		FileUtil.writeData(name, data);
 		sendOK();
