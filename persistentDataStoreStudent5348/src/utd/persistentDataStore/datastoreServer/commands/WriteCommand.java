@@ -25,10 +25,10 @@ public class WriteCommand extends ServerCommand {
 		int length = Integer.parseInt(size);		
 		logger.debug("length: " + length);
 	
-		byte[] data = new byte[length];
+		//byte[] data = new byte[length];
 		if(inputStream.available()<length)throw new ServerException("Can not read N bytes");
 		
-		data = StreamUtil.readData(length, inputStream);
+		byte[] data = StreamUtil.readData(length, inputStream);
 		FileUtil.writeData(name, data);
 		sendOK();
 

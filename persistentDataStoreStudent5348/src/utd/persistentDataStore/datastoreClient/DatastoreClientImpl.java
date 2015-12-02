@@ -35,14 +35,14 @@ public class DatastoreClientImpl implements DatastoreClient
 	{
 		logger.debug("Executing Write Operation");
 		try {
-			logger.debug("Opening Socket");
+			logger.debug("Write - Opening Socket");
 			Socket socket = new Socket();
 			SocketAddress saddr = new InetSocketAddress(address, port);
 			socket.connect(saddr);
 			InputStream inputStream = socket.getInputStream();
 			OutputStream outputStream = socket.getOutputStream();
 			
-			logger.debug("Writing Message");
+			logger.debug("Write - Writing Message");
 
 			//send write command to server
 			StreamUtil.writeLine("write" + "\n", outputStream);
@@ -54,11 +54,19 @@ public class DatastoreClientImpl implements DatastoreClient
 			StreamUtil.writeLine(data.length + "\n", outputStream);
 			
 			//send data to write to server
-			StreamUtil.writeLine(data + "\n", outputStream);			
+			StreamUtil.writeData(data, outputStream);			
 			
-			logger.debug("Reading Response");
-			String result = StreamUtil.readLine(inputStream).toLowerCase();
-			logger.debug("Response " + result);
+			logger.debug("Write - Reading Response");
+			String response = StreamUtil.readLine(inputStream).toLowerCase();
+
+			//check if write was successful 
+			if (response.equals("ok")) {
+				logger.debug("Write - Response " + response);
+			}
+			else {
+				//error, command filed, throw error indicating so
+				throw new ClientException("Error writing: " + response);
+			}
 		}
 		catch (IOException ex) {
 			throw new ClientException(ex.getMessage(), ex);
@@ -73,14 +81,14 @@ public class DatastoreClientImpl implements DatastoreClient
 	{
 		logger.debug("Executing Read Operation");
 		try {
-			logger.debug("Opening Socket");
+			logger.debug("Read - Opening Socket");
 			Socket socket = new Socket();
 			SocketAddress saddr = new InetSocketAddress(address, port);
 			socket.connect(saddr);
 			InputStream inputStream = socket.getInputStream();
 			OutputStream outputStream = socket.getOutputStream();
 			
-			logger.debug("Writing Message");
+			logger.debug("Read - Writing Message");
 
 			//send read command to server
 			StreamUtil.writeLine("read" + "\n", outputStream);
@@ -89,7 +97,7 @@ public class DatastoreClientImpl implements DatastoreClient
 			StreamUtil.writeLine(name + "\n", outputStream);
 
 			//get response from server
-			logger.debug("Reading Response");
+			logger.debug("Read - Reading Response");
 			String response = StreamUtil.readLine(inputStream).toLowerCase();
 			
 			//check if command was valid
@@ -101,7 +109,7 @@ public class DatastoreClientImpl implements DatastoreClient
 				byte[] result = StreamUtil.readData(length, inputStream);
 				
 				//return result
-				logger.debug("Response " + result);
+				logger.debug("Read - Response " + result);
 				return result;
 			}
 			else {
@@ -122,14 +130,14 @@ public class DatastoreClientImpl implements DatastoreClient
 	{
 		logger.debug("Executing Delete Operation");
 		try {
-			logger.debug("Opening Socket");
+			logger.debug("Delete - Opening Socket");
 			Socket socket = new Socket();
 			SocketAddress saddr = new InetSocketAddress(address, port);
 			socket.connect(saddr);
 			InputStream inputStream = socket.getInputStream();
 			OutputStream outputStream = socket.getOutputStream();
 			
-			logger.debug("Writing Message");
+			logger.debug("Delete - Writing Message");
 
 			//send delete command to server
 			StreamUtil.writeLine("delete" + "\n", outputStream);
@@ -137,9 +145,17 @@ public class DatastoreClientImpl implements DatastoreClient
 			//send filename to server
 			StreamUtil.writeLine(name + "\n", outputStream);	
 			
-			logger.debug("Reading Response");
-			String result = StreamUtil.readLine(inputStream).toLowerCase();
-			logger.debug("Response " + result);
+			logger.debug("Delete - Reading Response");
+			String response = StreamUtil.readLine(inputStream).toLowerCase();
+
+			//check if delete was successful 
+			if (response.equals("ok")) {
+				logger.debug("Delete - Response " + response);
+			}
+			else {
+				//error, command filed, throw error indicating so
+				throw new ClientException("Error deleting: " + response);
+			}
 		}
 		catch (IOException ex) {
 			throw new ClientException(ex.getMessage(), ex);
@@ -154,20 +170,20 @@ public class DatastoreClientImpl implements DatastoreClient
 	{
 		logger.debug("Executing Directory Operation");
 		try {
-			logger.debug("Opening Socket");
+			logger.debug("Directory - Opening Socket");
 			Socket socket = new Socket();
 			SocketAddress saddr = new InetSocketAddress(address, port);
 			socket.connect(saddr);
 			InputStream inputStream = socket.getInputStream();
 			OutputStream outputStream = socket.getOutputStream();
 			
-			logger.debug("Writing Message");
+			logger.debug("Directory - Writing Message");
 
 			//send directory command to server
 			StreamUtil.writeLine("directory" + "\n", outputStream);
 
 			//get response from server
-			logger.debug("Reading Response");
+			logger.debug("Directory - Reading Response");
 			String response = StreamUtil.readLine(inputStream).toLowerCase();
 			
 			//check if command was valid
