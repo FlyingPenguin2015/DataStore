@@ -121,6 +121,29 @@ public class DatastoreClientImpl implements DatastoreClient
     public void delete(String name) throws ClientException
 	{
 		logger.debug("Executing Delete Operation");
+		try {
+			logger.debug("Opening Socket");
+			Socket socket = new Socket();
+			SocketAddress saddr = new InetSocketAddress(address, port);
+			socket.connect(saddr);
+			InputStream inputStream = socket.getInputStream();
+			OutputStream outputStream = socket.getOutputStream();
+			
+			logger.debug("Writing Message");
+
+			//send delete command to server
+			StreamUtil.writeLine("delete" + "\n", outputStream);
+			
+			//send filename to server
+			StreamUtil.writeLine(name + "\n", outputStream);	
+			
+			logger.debug("Reading Response");
+			String result = StreamUtil.readLine(inputStream).toLowerCase();
+			logger.debug("Response " + result);
+		}
+		catch (IOException ex) {
+			throw new ClientException(ex.getMessage(), ex);
+		}
 	}
 
 	/* (non-Javadoc)
