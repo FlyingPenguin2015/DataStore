@@ -1,10 +1,8 @@
 package utd.persistentDataStore.datastoreServer;
 
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -69,8 +67,8 @@ public class DatastoreServer
 	private ServerCommand dispatchCommand(InputStream inputStream) 
 			throws ServerException, IOException
 	{
-		//get command string
-		String commandString = StreamUtil.readLine(inputStream);
+		//get command string while ignoring case
+		String commandString = StreamUtil.readLine(inputStream).toLowerCase();
 		
 		//return appropriate command instance to handle the command 
 		if ("write".equalsIgnoreCase(commandString)) {
