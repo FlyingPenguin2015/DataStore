@@ -1,17 +1,19 @@
 package utd.persistentDataStore.datastoreServer;
 
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.apache.log4j.Logger;
 
+import utd.persistentDataStore.datastoreServer.commands.DeleteCommand;
+import utd.persistentDataStore.datastoreServer.commands.DirectoryCommand;
+import utd.persistentDataStore.datastoreServer.commands.ReadCommand;
 import utd.persistentDataStore.datastoreServer.commands.ServerCommand;
+import utd.persistentDataStore.datastoreServer.commands.WriteCommand;
 import utd.persistentDataStore.utils.ServerException;
 import utd.persistentDataStore.utils.StreamUtil;
 
@@ -62,10 +64,33 @@ public class DatastoreServer
 		}
 	}
 
-	private ServerCommand dispatchCommand(InputStream inputStream) throws ServerException
+	private ServerCommand dispatchCommand(InputStream inputStream) 
+			throws ServerException, IOException
 	{
-		// Need to implement
-		return null;
+		//get command string while ignoring case
+		String commandString = StreamUtil.readLine(inputStream).toLowerCase();
+		
+		//return appropriate command instance to handle the command 
+		if ("write".equalsIgnoreCase(commandString)) {
+			ServerCommand command = new WriteCommand();
+			return command;
+		} 
+		else if ("read".equalsIgnoreCase(commandString)) {
+			ServerCommand command = new ReadCommand();
+			return command;
+		} 
+		else if ("delete".equalsIgnoreCase(commandString)) {
+			ServerCommand command = new DeleteCommand();
+			return command;
+		} 
+		else if ("directory".equalsIgnoreCase(commandString)) {
+			ServerCommand command = new DirectoryCommand();
+			return command;
+		} 
+		else {
+			//unknown command parsed, throw exception
+			throw new ServerException("Error, unkown command parsed");
+		}
 	}
 
 	public static void main(String args[])
