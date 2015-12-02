@@ -29,6 +29,7 @@ public class WriteCommand extends ServerCommand {
 		if(inputStream.available()<length)throw new ServerException("can not read N bytes");
 		data = StreamUtil.readData(length, inputStream);
 		FileUtil.writeData(name, data);
+		sendOK();
 
 		logger.debug("Finished Write Command");
 

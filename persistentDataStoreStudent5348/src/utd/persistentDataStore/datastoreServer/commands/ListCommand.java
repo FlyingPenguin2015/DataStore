@@ -18,6 +18,7 @@ public class ListCommand extends ServerCommand {
 		
 			List<String> list = new ArrayList<String>();
 		    list = FileUtil.directory(); 
+		    sendOK();
 			String num = String.valueOf(list.size());
 			StreamUtil.writeLine(num, outputStream);
 			for(int i=0;i<list.size();i++)
@@ -25,7 +26,7 @@ public class ListCommand extends ServerCommand {
 			   StreamUtil.writeLine(list.get(i), outputStream);
 			}
 			
-			
+			sendOK();
 				
 			logger.debug("Finished List Command");
 		
